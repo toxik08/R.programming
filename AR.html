@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR Rim Color Changer</title>
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- AR.js -->
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.2.1/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body style="margin:0; overflow:hidden;">
+    <!-- Color buttons -->
+    <div style="position:fixed; top:10px; left:10px; z-index:999;">
+      <button onclick="setColor('red')">Red</button>
+      <button onclick="setColor('blue')">Blue</button>
+      <button onclick="setColor('gold')">Gold</button>
+    </div>
+
+    <!-- AR scene -->
+    <a-scene embedded arjs>
+      <a-marker preset="hiro">
+        <!-- A torus to represent the motor rim -->
+        <a-torus id="rim" radius="0.8" tube="0.1" color="gray"></a-torus>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      function setColor(color) {
+        document.querySelector('#rim').setAttribute('color', color);
+      }
+    </script>
+  </body>
+</html>
