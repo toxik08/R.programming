@@ -60,16 +60,14 @@ if (!file.exists(feedback_file)) {
 raw_lines <- readLines(feedback_file, encoding = "UTF-8", warn = FALSE)
 
 corpus <- VCorpus(VectorSource(raw_lines))
-
 corpus <- tm_map(corpus, content_transformer(tolower))              
 corpus <- tm_map(corpus, removeNumbers)                               
 corpus <- tm_map(corpus, removePunctuation)                           
 corpus <- tm_map(corpus, removeWords, stopwords("english"))           
 corpus <- tm_map(corpus, stripWhitespace)                            
-
-corpus <- tm_map(corpus, content_transformer(function(x) gsub("\\b(girls|boys)\\b\\s*:\\s*", "", x, ignore.case = TRUE)))
-
-
+corpus <- tm_map(corpus, content_transformer(function(x) {x <- gsub("\\b(girl|girls|boy|boys)\\b:?\\s*", "", x, ignore.case = TRUE)
+  return(x)
+}))
 corpus <- tm_map(corpus, stemDocument, language = "english")
 
 
@@ -88,23 +86,11 @@ freq_df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-write.csv(freq_df, "word_frequencies.csv", row.names = FALSE)
-cat("Saved frequency table to word_frequencies.csv\n\n")
-
 top_n <- 10
 top_words <- head(freq_df, n = top_n)
 cat("Top", top_n, "most frequent words:\n")
 print(top_words)
 cat("\n")
-
-interpretation <- c(
-  "Interpretation:",
-  "1) The most frequent words highlight the central themes in the feedback — common words often relate to service, staff, wait times, and processing.",
-  "2) High-frequency words like 'serv' (service after stemming), 'staff', 'wait', 'help', and 'quick' suggest that speed and staff behavior are primary drivers of satisfaction or complaint.",
-  "3) The presence of both positive and negative stems (e.g., 'friendli' vs 'slow'/'wait') indicates mixed experiences across customers.",
-  "4) Rare words (frequency = 1) capture specific, individual issues or unique descriptors that may be worth qualitative inspection."
-)
-cat(paste(interpretation, collapse = "\n"), "\n\n")
 
 
 
